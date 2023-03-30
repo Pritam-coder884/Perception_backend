@@ -1,6 +1,7 @@
 const { User } = require("../models");
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const {sendingEmail }= require('./nodemailer')
 
 const createUser = async (req, res) => {
  try{
@@ -12,12 +13,7 @@ const createUser = async (req, res) => {
     phone,
     college
   } = req.body;
-
-  //finding existing users
-  const oldUser = await User.find({ email })
-    if (oldUser.length != 0) {
-      return res.status(401).json({ error: 'User Already Exists' })
-    }
+ 
 
   //password hashing
   const salt = bcrypt.genSaltSync(10);
@@ -31,8 +27,10 @@ const createUser = async (req, res) => {
     phone,
     college
   })
+  const userEmail=newUser.email;
   const createUser = await newUser.save();
   res.status(200).send(createUser);
+  sendingEmail({userEmail});
 
  }catch(error){
   res.status(500).send(error.message);
@@ -75,7 +73,8 @@ const loginUser = async (req, res) => {
 module.exports = {
   createUser,
   getAllUser,
-  loginUser
+  loginUser,
 };
+
 
 
