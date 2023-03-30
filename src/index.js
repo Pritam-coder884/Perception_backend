@@ -4,6 +4,7 @@ const mongoose=require("mongoose");
 const app=express();
 const {userRoute}=require("./routes");
 
+
 app.use(express.json());
 app.use("/",userRoute);
 
