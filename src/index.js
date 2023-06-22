@@ -3,10 +3,13 @@ const express=require("express");
 const mongoose=require("mongoose");
 const app=express();
 const {userRoute}=require("./routes");
+const {notFound,errorHandlerMiddleware}=require("./middleware")
 
 
 app.use(express.json());
 app.use("/",userRoute);
+app.use(notFound);
+app.use(errorHandlerMiddleware);
 
 app.get("/",(req,res)=>{
     res.send("welcome to Perception server");

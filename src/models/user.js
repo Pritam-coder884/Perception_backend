@@ -5,15 +5,11 @@ const UserSchema=new mongoose.Schema({
         required:true,
         unique:true,
     },
-    name:{
+    username:{
         type:String,
         required:true,
         min:2,
         max:50
-    },
-    gender:{
-        type:String,
-        required:true,
     },
     password:{
         type:String,
@@ -24,8 +20,12 @@ const UserSchema=new mongoose.Schema({
         type:Number,
         required:true,
     },
-    college:{
-        type:String,
+    yearOfPassout:{
+        type:Number,
+        required:true,
+    },
+    isZairzaMember:{
+        type:Boolean,
         required:true,
     },
     
