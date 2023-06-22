@@ -7,11 +7,11 @@ const createUser = async (req, res) => {
  try{
   const {
     email,
-    name,
-    gender,
+    username,
     password,
     phone,
-    college
+    isZairzaMember,
+    yearOfPassout
   } = req.body;
  
 
@@ -21,11 +21,11 @@ const createUser = async (req, res) => {
 
   const newUser=new User({
     email,
-    name,
-    gender,
+    username,
     password : bcrypt_password,
     phone,
-    college
+    isZairzaMember,
+    yearOfPassout
   })
   const userEmail=newUser.email;
   const createUser = await newUser.save();
@@ -49,15 +49,22 @@ const getAllUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
   const { email, password } = req.body
+
+  if (!email || !password) {
+    res.status(400).send({
+      msg:"Please Provide Email And Password"
+    })
+  }
+
   const oldUser = await User.findOne({ email })
   if (!oldUser) {
-    res.status(404).json({
-      msg: 'User Not Found',
-    })
+    res.status(401).send({
+      msg: 'Please Provide Correct Credentials',
+    })  
   }
  
   if (await bcrypt.compare(password, oldUser.password)) {
-    const token = jwt.sign({email: oldUser.email, name: oldUser.name,phone: oldUser.phone}, process.env.JWT_SECRET)
+    const token = jwt.sign({email: oldUser.email, username: oldUser.username,phone: oldUser.phone,isZairzaMember:oldUser.isZairzaMember}, process.env.JWT_SECRET)
 
     if (res.status(201)) {
       return res.status(201).send({token :  token })
