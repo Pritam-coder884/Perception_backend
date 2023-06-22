@@ -1,7 +1,9 @@
 const { User } = require("../models");
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const {sendingEmail }= require('./nodemailer')
+const {sendingEmail }= require('./nodemailer');
+const { StatusCodes } = require('http-status-codes');
+const { BadRequestError, UnauthenticatedError } = require('../errors');
 
 const createUser = async (req, res) => {
  try{
@@ -13,6 +15,10 @@ const createUser = async (req, res) => {
     isZairzaMember,
     yearOfPassout
   } = req.body;
+
+  if(!email || !username || !password || !phone || !isZairzaMember || !yearOfPassout){
+    throw new BadRequestError('Please provide all the details');
+  }
  
 
   //password hashing
@@ -48,32 +54,32 @@ const getAllUser = async (req, res) => {
 };
 
 const loginUser = async (req, res) => {
-  const { email, password } = req.body
+  try {
+    const { email, password } = req.body
 
-  if (!email || !password) {
-    res.status(400).send({
-      msg:"Please Provide Email And Password"
-    })
-  }
-
-  const oldUser = await User.findOne({ email })
-  if (!oldUser) {
-    res.status(401).send({
-      msg: 'Please Provide Correct Credentials',
-    })  
-  }
- 
-  if (await bcrypt.compare(password, oldUser.password)) {
-    const token = jwt.sign({email: oldUser.email, username: oldUser.username,phone: oldUser.phone,isZairzaMember:oldUser.isZairzaMember}, process.env.JWT_SECRET)
-
-    if (res.status(201)) {
-      return res.status(201).send({token :  token })
-    } 
-    else {
-      return res.status(500).send({ message: 'error' })
+    if (!email || !password) {
+      throw new BadRequestError('Please provide email and password')
     }
+  
+    const oldUser = await User.findOne({ email })
+    if (!oldUser) {
+      throw new UnauthenticatedError('Invalid Credentials')
+    }
+   
+    if (await bcrypt.compare(password, oldUser.password)) {
+      const token = jwt.sign({email: oldUser.email, username: oldUser.username,phone: oldUser.phone,isZairzaMember:oldUser.isZairzaMember}, `${process.env.JWT_SECRET_KEY}`)
+  
+      if (res.status(201)) {
+        return res.status(201).send({token :  token })
+      } 
+      else {
+        throw new UnauthenticatedError('Invalid Credentials')
+      }
+    }
+    res.status(401).send({message : "Invalid Credentials"})
+  } catch (error) {
+    res.status(500).send(error.message);
   }
-  res.status(401).send({message : "Invalid password"})
 }
 
 
