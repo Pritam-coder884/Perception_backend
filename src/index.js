@@ -3,23 +3,15 @@ const express=require("express");
 const mongoose=require("mongoose");
 const app=express();
 const {userRoute}=require("./routes");
-const {notFound,errorHandlerMiddleware}=require("./middleware")
+const {notFound,errorHandlerMiddleware}=require("./middleware");
 
 
 app.use(express.json());
 app.use("/",userRoute);
 
-// error handler
-app.use(notFound);
-app.use(errorHandlerMiddleware);
 
 app.get("/",(req,res)=>{
-    res.send("welcome to Perception server");
-})
-
-const port=process.env.PORT || 2000;
-app.listen(port,()=>{
-    console.log(`listening to the port number ${port}`);
+  res.send("welcome to Perception server");
 })
 
 
@@ -35,3 +27,12 @@ mongoose
     console.log("Connected with Mongodb database");
   })
   .catch((error) => console.log(`${error}`));
+
+// error handler
+app.use(notFound);
+app.use(errorHandlerMiddleware);
+
+const port=process.env.PORT || 2000;
+app.listen(port,()=>{
+    console.log(`listening to the port number ${port}`);
+})

@@ -5,7 +5,7 @@ const {sendingEmail }= require('./nodemailer');
 const { StatusCodes } = require('http-status-codes');
 const { BadRequestError, UnauthenticatedError } = require('../errors');
 
-const createUser = async (req, res) => {
+const createUser = async (req, res, next) => {
  try{
   const {
     email,
@@ -39,21 +39,23 @@ const createUser = async (req, res) => {
   sendingEmail({userEmail});
 
  }catch(error){
-  res.status(500).send(error.message);
+  // res.status(500).send(error.message);
+  next(error);
  }
 
 };
 
-const getAllUser = async (req, res) => {
+const getAllUser = async (req, res, next) => {
   try {
     const getUsers = await User.find();
     res.status(200).send(getUsers);
   } catch (error) {
-    res.status(500).send({ message: "internal server error" });
+    // res.status(500).send({ message: "internal server error" });
+    next(error);
   }
 };
 
-const loginUser = async (req, res) => {
+const loginUser = async (req, res, next) => {
   try {
     const { email, password } = req.body
 
@@ -78,7 +80,8 @@ const loginUser = async (req, res) => {
     }
     res.status(401).send({message : "Invalid Credentials"})
   } catch (error) {
-    res.status(500).send(error.message);
+    // res.status(500).send(error.message);
+    next(error);
   }
 }
 
