@@ -1,7 +1,7 @@
 const { User } = require("../models");
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const {sendingEmail }= require('./nodemailer');
+// const {sendingEmail }= require('../services/nodemailer');
 const { StatusCodes } = require('http-status-codes');
 const { BadRequestError, UnauthenticatedError } = require('../errors');
 
@@ -36,7 +36,7 @@ const createUser = async (req, res, next) => {
   const userEmail=newUser.email;
   const createUser = await newUser.save();
   res.status(200).send(createUser);
-  sendingEmail({userEmail});
+  // sendingEmail({userEmail});
 
  }catch(error){
   // res.status(500).send(error.message);
