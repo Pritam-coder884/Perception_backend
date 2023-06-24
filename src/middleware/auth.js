@@ -1,7 +1,7 @@
 const jwt=require('jsonwebtoken');
 const { UnauthenticatedError } = require('../errors');
 
-const authentication = async (req, res , next) => {
+const authenticationJWT = async (req, res , next) => {
     const authHeader = req.headers.authorization
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       throw new UnauthenticatedError('Authentication invalid')
@@ -19,4 +19,13 @@ const authentication = async (req, res , next) => {
     }
 }
 
-module.exports=authentication;
+const authenticationGoogleandGithub = (req,res,next) => {
+  if(req.isAuthenticated()){
+    next()
+  }
+}
+
+module.exports={
+  authenticationJWT,
+  authenticationGoogleandGithub
+};

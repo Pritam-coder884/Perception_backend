@@ -13,24 +13,24 @@ const UserSchema=new mongoose.Schema({
     },
     password:{
         type:String,
-        required:true,
         min:5,
     },
     phone:{
         type:Number,
-        required:true,
     },
     yearOfPassout:{
         type:Number,
-        required:true,
     },
     isZairzaMember:{
         type:Boolean,
-        required:true,
+        default :false
     },
     
 },
-{timestamps:true}
+{
+    timestamps:true,
+    versionKey:false
+}
 
 );
 module.exports = mongoose.model("User",UserSchema);

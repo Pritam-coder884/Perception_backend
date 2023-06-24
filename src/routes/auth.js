@@ -2,11 +2,12 @@ const express = require('express')
 const passport =require('passport')
 const route = express.Router();
 const {AuthController} = require('../controllers')
+const {authentication} = require('../middleware')
 
 route.get('/auth/login/failed', AuthController.loginFailed)
 
 //use this route to fetch user details after passport authentication
-route.get('/auth/login/success', AuthController.loginSuccess)
+route.get('/auth/login/success', authentication.authenticationGoogleandGithub, AuthController.loginSuccess)
 
 route.get('/auth/logout', AuthController.logout)
 
