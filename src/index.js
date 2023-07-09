@@ -15,9 +15,9 @@ const port=process.env.PORT || 2000;
 app.use(express.json());
 app.use(session({
   secret : "zairza",
-  resave : false,
-  saveUninitialized : true,
-  cookie : {secure : false}
+  // resave : true,
+  // saveUninitialized : true,
+  // cookie : {secure : false}
 }))
 app.use(passport.initialize())
 app.use(passport.session())
